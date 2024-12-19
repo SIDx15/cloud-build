@@ -1,0 +1,49 @@
+# .github/workflows/deploy.yml
+name: Deploy to Cloud Run
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Use Node.js
+      uses: actions/setup-node@v2
+      with:
+        node-version: '16'
+    - run: npm ci
+    - run: npm test
+
+  deploy:
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    
+    # Setup gcloud CLI
+    - name: Set up Cloud SDK
+      uses: google-github-actions/setup-gcloud@v0
+      with:
+        project_id: ${{ secrets.GCP_PROJECT_ID }}
+        service_account_key: ${{ secrets.GCP_SA_KEY }}
+        export_default_credentials: true
+
+    # Build and push image to Google Container Registry
+    - name: Build and Push Container
+      run: |-
+        docker build -t gcr.io/${{ secrets.GCP_PROJECT_ID }}/nodejs-app:${{  github.sha }} .
+        docker push gcr.io/${{ secrets.GCP_PROJECT_ID }}/nodejs-app:${{  github.sha }}
+    
+    # Deploy to Cloud Run
+    - name: Deploy to Cloud Run
+      run: |-
+        gcloud run deploy nodejs-app \
+          --image gcr.io/${{ secrets.GCP_PROJECT_ID }}/nodejs-app:${{  github.sha }} \
+          --platform managed \
+          --region us-central1 \
+          --allow-unauthenticated
