@@ -9,7 +9,7 @@ app.use(express.json());
 // Basic routes
 app.get('/', (req, res) => {
   res.json({
-    message: 'Hello, Cloud Run with Node.js! Testing ci/cd part 2',
+    message: 'Hello, Cloud Run with Node.js! Testing ci/cd part 1',
     timestamp: new Date().toISOString()
   });
 });
