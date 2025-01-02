@@ -16,7 +16,6 @@
     "test": "mocha"
   },
   "dependencies": {
-    "express": "^4.21.2",
-    "moment": "^2.30.1"
+    "express": "^4.21.2"
   }
 }
