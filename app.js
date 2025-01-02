@@ -1,5 +1,5 @@
-// app.js
 const express = require('express');
+const moment = require('moment');  // Add this new line
 const app = express();
 const port = process.env.PORT || 8080;
 
@@ -9,7 +9,7 @@ app.use(express.json());
 // Basic routes
 app.get('/', (req, res) => {
   res.json({
-    message: 'Hello, Cloud Run with Node.js! Testing ci/cd part 1',
+    message: 'Hello, Cloud Run with Node.js! Testing ci/cd part 2',
     timestamp: new Date().toISOString()
   });
 });
@@ -29,6 +29,15 @@ app.get('/api/users', (req, res) => {
     { id: 2, name: 'Bob' }
   ];
   res.json(users);
+});
+
+// New endpoint using moment.js
+app.get('/time', (req, res) => {
+  res.json({
+    current: moment().format('MMMM Do YYYY, h:mm:ss a'),
+    fromNow: moment().subtract(1, 'days').fromNow(),
+    calendar: moment().calendar()
+  });
 });
 
 // Start the server
