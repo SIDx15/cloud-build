@@ -1,0 +1,11 @@
+https://node-app-cloud-run-136419374113.us-east1.run.app
+
+docker build -t node-app-image .
+gcloud auth configure-docker [REGION]-docker.pkg.dev
+docker tag node-app-image [REGION]-docker.pkg.dev/[PROJECT-ID]/[REPOSITORY]/node-app-image
+
+docker push [REGION]-docker.pkg.dev/[PROJECT-ID]/[REPOSITORY]/node-app-image
+
+gcloud auth configure-docker us-central1-docker.pkg.dev
+docker tag node-app-image us-central1-docker.pkg.dev/twitter-clone-dev-curated/my-repo/node-app-image
+docker push us-central1-docker.pkg.dev/twitter-clone-dev-curated/my-repo/node-app-image
